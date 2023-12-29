@@ -2,7 +2,7 @@ import 'package:flutter_app_native/model/PlayList.dart';
 
 class Sample {
   final String uri;
-  final String? drmLicenseUri;
+  final String drmLicenseUri;
   final String name;
   final String drmScheme;
   final String adTagUri;
@@ -29,7 +29,7 @@ class Sample {
     var playListData = (json['playlist'] as List);
     return Sample(
         uri: json['uri'] as String,
-        drmLicenseUri: json['drm_license_uri'] as String?,
+        drmLicenseUri: json['drm_license_uri'] as String,
         name: json['name'] as String,
         drmScheme: json['drm_scheme'] as String,
         adTagUri: json['ad_tag_uri'] as String,
