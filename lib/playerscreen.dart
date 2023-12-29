@@ -23,11 +23,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
   _PlayerScreenState(this._model);
 
   Future _hideNavigationBar() async {
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
   Future _showNavigationBar() async {
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 
   @override
@@ -60,7 +60,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
         height: double.infinity,
         child: NetworkPlayerLifeCycle(
           _model.uri,
-          _model.drm_license_uri,
+          _model.drmLicenseUri,
           _model.extension,
           (BuildContext context, VideoPlayerController controller) =>
               AspectRatioVideo(controller),
@@ -80,7 +80,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
             aspectRatio: 16 / 9,
             child: NetworkPlayerLifeCycle(
               _model.uri,
-              _model.drm_license_uri,
+              _model.drmLicenseUri,
               _model.extension,
               (BuildContext context, VideoPlayerController controller) =>
                   AspectRatioVideo(controller),
@@ -104,7 +104,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                  child: _model.drm_license_uri != null
+                  child: _model.drmLicenseUri != null
                       ? Text(
                           "With DRM",
                           style: TextStyle(
