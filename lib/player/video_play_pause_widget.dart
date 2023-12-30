@@ -23,7 +23,11 @@ class VideoPlayPause extends StatefulWidget {
 class _VideoPlayPauseState extends State<VideoPlayPause> {
   _VideoPlayPauseState() {
     listener = () {
-      SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
+      SchedulerBinding.instance.addPostFrameCallback(
+        (_) {
+          if(context.mounted) setState(() {});
+        },
+      );
     };
   }
 
