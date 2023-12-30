@@ -7,20 +7,20 @@ import 'player/playerlifecycle.dart';
 import 'player/videowidget.dart';
 
 class PlayerScreen extends StatefulWidget {
-  final Sample _model;
+  final List<Sample> models;
 
-  const PlayerScreen(this._model);
+  const PlayerScreen({
+    required this.models,
+  });
 
   @override
   State<StatefulWidget> createState() {
-    return _PlayerScreenState(_model);
+    return _PlayerScreenState();
   }
 }
 
 class _PlayerScreenState extends State<PlayerScreen> {
-  final Sample _model;
-
-  _PlayerScreenState(this._model);
+  PageController? _pageController;
 
   Future _hideNavigationBar() async {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -28,6 +28,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   Future _showNavigationBar() async {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
   }
 
   @override
@@ -59,9 +65,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
         width: double.infinity,
         height: double.infinity,
         child: NetworkPlayerLifeCycle(
-          _model.uri,
-          _model.drmLicenseUri,
-          _model.extension,
+          widget.models[0].uri,
+          widget.models[0].drmLicenseUri,
+          widget.models[0].extension,
           (BuildContext context, VideoPlayerController controller) =>
               AspectRatioVideo(controller),
         ),
@@ -74,58 +80,72 @@ class _PlayerScreenState extends State<PlayerScreen> {
       appBar: AppBar(
         title: Text("Media Play"),
       ),
-      body: Column(
-        children: [
-          AspectRatio(
-            aspectRatio: 16 / 9,
-            child: NetworkPlayerLifeCycle(
-              _model.uri,
-              _model.drmLicenseUri,
-              _model.extension,
-              (BuildContext context, VideoPlayerController controller) =>
-                  AspectRatioVideo(controller),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _model.name,
-                  style: TextStyle(color: Colors.black, fontSize: 22),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                  child: Text(
-                    _model.uri ?? 'No URI',
-                    style: TextStyle(color: Colors.black38, fontSize: 14),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                  child: _model.drmLicenseUri != null
-                      ? Text(
-                          "With DRM",
-                          style: TextStyle(
-                              color: Colors.black54,
-                              fontSize: 14,
-                              backgroundColor: Colors.green),
-                        )
-                      : Text(
-                          "Without DRM",
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: 14,
-                            backgroundColor: Colors.red,
+      body: (_pageController == null)
+          ? SizedBox()
+          : PageView(
+              scrollDirection: Axis.vertical,
+              physics: const BouncingScrollPhysics(),
+              controller: _pageController,
+              children: widget.models
+                  .map(
+                    (e) => Column(
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: NetworkPlayerLifeCycle(
+                            e.uri,
+                            e.drmLicenseUri,
+                            e.extension,
+                            (BuildContext context,
+                                    VideoPlayerController controller) =>
+                                AspectRatioVideo(controller),
                           ),
                         ),
-                )
-              ],
+                        Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                e.name,
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 22),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                child: Text(
+                                  e.uri ?? 'No URI',
+                                  style: TextStyle(
+                                      color: Colors.black38, fontSize: 14),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                child: e.drmLicenseUri != null
+                                    ? Text(
+                                        "With DRM",
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 14,
+                                            backgroundColor: Colors.green),
+                                      )
+                                    : Text(
+                                        "Without DRM",
+                                        style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 14,
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      ),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                  .toList(),
             ),
-          )
-        ],
-      ),
     );
   }
 }

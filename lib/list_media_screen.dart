@@ -74,7 +74,7 @@ class _MediaListState extends State<ListMediaScreen> {
       columnContent.add(
         GestureDetector(
           onTap: () {
-            _onListItemClick(content);
+            _onListItemClick(list);
           },
           child: content.playlist != null
               ? ExpansionTile(
@@ -128,12 +128,11 @@ class _MediaListState extends State<ListMediaScreen> {
     return columnContent;
   }
 
-  _onListItemClick(Sample model) {
-    print(model.name);
+  _onListItemClick(List<Sample> models) {
     Navigator.push<PlayerScreen>(
       context,
       MaterialPageRoute<PlayerScreen>(
-          builder: (BuildContext context) => PlayerScreen(model)),
+          builder: (BuildContext context) => PlayerScreen(models: models)),
     );
   }
 }
