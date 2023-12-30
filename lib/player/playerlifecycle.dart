@@ -8,8 +8,8 @@ abstract class PlayerLifeCycle extends StatefulWidget {
 
   final VideoWidgetBuilder childBuilder;
   final String dataSource;
-  final String licenseUrl;
-  final String extension;
+  final String? licenseUrl;
+  final String? extension;
 }
 
 typedef Widget VideoWidgetBuilder(
@@ -18,8 +18,8 @@ typedef Widget VideoWidgetBuilder(
 /// A widget connecting its life cycle to a [VideoPlayerController] using
 /// a data source from the network.
 class NetworkPlayerLifeCycle extends PlayerLifeCycle {
-  NetworkPlayerLifeCycle(String dataSource, String licenseUrl, String extension,
-      VideoWidgetBuilder childBuilder)
+  NetworkPlayerLifeCycle(String dataSource, String? licenseUrl,
+      String extension, VideoWidgetBuilder childBuilder)
       : super(dataSource, licenseUrl, extension, childBuilder);
 
   @override
@@ -30,7 +30,7 @@ class _NetworkPlayerLifeCycleState extends _PlayerLifeCycleState {
   @override
   VideoPlayerController createVideoPlayerController() {
     var formatHint;
-    if (widget.extension != null && widget.extension.isNotEmpty) {
+    if (widget.extension != null && widget.extension!.isNotEmpty) {
       if (widget.extension == 'mpd') {
         formatHint = VideoFormat.dash;
       }
@@ -41,7 +41,7 @@ class _NetworkPlayerLifeCycleState extends _PlayerLifeCycleState {
 }
 
 abstract class _PlayerLifeCycleState extends State<PlayerLifeCycle> {
-  VideoPlayerController controller;
+  VideoPlayerController? controller;
 
   @override
 
@@ -50,14 +50,14 @@ abstract class _PlayerLifeCycleState extends State<PlayerLifeCycle> {
   void initState() {
     super.initState();
     controller = createVideoPlayerController();
-    controller.addListener(() {
-      if (controller.value.hasError) {
-        print(controller.value.errorDescription);
+    controller?.addListener(() {
+      if (controller?.value.hasError ?? false) {
+        print(controller?.value.errorDescription);
       }
     });
-    controller.initialize();
-    controller.setLooping(true);
-    controller.play();
+    controller?.initialize();
+    controller?.setLooping(true);
+    controller?.play();
   }
 
   @override
@@ -67,13 +67,15 @@ abstract class _PlayerLifeCycleState extends State<PlayerLifeCycle> {
 
   @override
   void dispose() {
-    controller.dispose();
+    controller?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.childBuilder(context, controller);
+    return (controller == null)
+        ? SizedBox()
+        : widget.childBuilder(context, controller!);
   }
 
   VideoPlayerController createVideoPlayerController();
