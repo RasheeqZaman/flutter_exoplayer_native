@@ -4,7 +4,7 @@ class MediaItemModel {
   final String name;
   final List<Sample> samples;
 
-  const MediaItemModel({this.name, this.samples});
+  const MediaItemModel({required this.name, required this.samples});
 
   factory MediaItemModel.fromJson(Map<String, dynamic> json) {
     return MediaItemModel(
