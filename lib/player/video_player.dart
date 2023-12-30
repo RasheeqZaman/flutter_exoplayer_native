@@ -179,7 +179,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
 
   /// The URI to the video file. This will be in different formats depending on
   /// the [DataSourceType] of the original video.
-  final String dataSource;
+  final String? dataSource;
   final String? licenseUrl;
 
   /// **Android only**. Will override the platform's generic file format

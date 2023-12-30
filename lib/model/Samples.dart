@@ -1,7 +1,7 @@
 import 'package:flutter_app_native/model/PlayList.dart';
 
 class Sample {
-  final String uri;
+  final String? uri;
   final String? drmLicenseUri;
   final String name;
   final String? drmScheme;
@@ -13,7 +13,7 @@ class Sample {
   final List<PlayListModel>? playlist;
 
   const Sample({
-    required this.uri,
+    this.uri,
     this.drmLicenseUri,
     required this.name,
     this.drmScheme,
@@ -28,7 +28,7 @@ class Sample {
   factory Sample.fromJson(Map<String, dynamic> json) {
     var playListData = (json['playlist'] as List?);
     return Sample(
-      uri: json['uri'] as String,
+      uri: json['uri'] as String?,
       drmLicenseUri: json['drm_license_uri'] as String?,
       name: json['name'] as String,
       drmScheme: json['drm_scheme'] as String?,

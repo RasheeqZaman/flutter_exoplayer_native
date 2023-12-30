@@ -98,7 +98,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                   child: Text(
-                    _model.uri,
+                    _model.uri ?? 'No URI',
                     style: TextStyle(color: Colors.black38, fontSize: 14),
                   ),
                 ),

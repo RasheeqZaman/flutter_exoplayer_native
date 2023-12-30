@@ -7,7 +7,7 @@ abstract class PlayerLifeCycle extends StatefulWidget {
       this.dataSource, this.licenseUrl, this.extension, this.childBuilder);
 
   final VideoWidgetBuilder childBuilder;
-  final String dataSource;
+  final String? dataSource;
   final String? licenseUrl;
   final String? extension;
 }
@@ -18,7 +18,7 @@ typedef Widget VideoWidgetBuilder(
 /// A widget connecting its life cycle to a [VideoPlayerController] using
 /// a data source from the network.
 class NetworkPlayerLifeCycle extends PlayerLifeCycle {
-  NetworkPlayerLifeCycle(String dataSource, String? licenseUrl,
+  NetworkPlayerLifeCycle(String? dataSource, String? licenseUrl,
       String? extension, VideoWidgetBuilder childBuilder)
       : super(dataSource, licenseUrl, extension, childBuilder);
 
