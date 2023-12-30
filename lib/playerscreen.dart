@@ -33,7 +33,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _pageController = PageController(
+      viewportFraction: 0.99,
+    );
   }
 
   @override
