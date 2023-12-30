@@ -19,7 +19,7 @@ typedef Widget VideoWidgetBuilder(
 /// a data source from the network.
 class NetworkPlayerLifeCycle extends PlayerLifeCycle {
   NetworkPlayerLifeCycle(String dataSource, String? licenseUrl,
-      String extension, VideoWidgetBuilder childBuilder)
+      String? extension, VideoWidgetBuilder childBuilder)
       : super(dataSource, licenseUrl, extension, childBuilder);
 
   @override

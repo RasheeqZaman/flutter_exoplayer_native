@@ -9,7 +9,7 @@ class Sample {
   final String? subtitleUri;
   final String? subtitleMimeType;
   final String? subtitleLanguage;
-  final String extension;
+  final String? extension;
   final List<PlayListModel>? playlist;
 
   const Sample({
@@ -21,7 +21,7 @@ class Sample {
     this.subtitleUri,
     this.subtitleMimeType,
     this.subtitleLanguage,
-    required this.extension,
+    this.extension,
     this.playlist,
   });
 
