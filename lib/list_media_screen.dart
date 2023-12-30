@@ -1,11 +1,10 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app_native/model/MediaItemModel.dart';
 import 'package:flutter_app_native/model/PlayList.dart';
 import 'package:flutter_app_native/model/Samples.dart';
-import 'package:flutter_app_native/model/MediaItemModel.dart';
 import 'package:flutter_app_native/playerscreen.dart';
 
 class ListMediaScreen extends StatefulWidget {
@@ -89,8 +88,9 @@ class _MediaListState extends State<ListMediaScreen> {
                   children: <Widget>[
                     new Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children:
-                          _buildExpandableContentForPlayList(content.playlist),
+                      children: _buildExpandableContentForPlayList(
+                        content.playlist ?? [],
+                      ),
                     ),
                   ],
                 )
