@@ -59,7 +59,7 @@ abstract class VideoPlayerPlatform {
   }
 
   /// Clears one video.
-  Future<void> dispose(int textureId) {
+  Future<void> dispose(int? textureId) {
     throw UnimplementedError('dispose() has not been implemented.');
   }
 
@@ -69,42 +69,42 @@ abstract class VideoPlayerPlatform {
   }
 
   /// Returns a Stream of [VideoEventType]s.
-  Stream<VideoEvent> videoEventsFor(int textureId) {
+  Stream<VideoEvent> videoEventsFor(int? textureId) {
     throw UnimplementedError('videoEventsFor() has not been implemented.');
   }
 
   /// Sets the looping attribute of the video.
-  Future<void> setLooping(int textureId, bool looping) {
+  Future<void> setLooping(int? textureId, bool looping) {
     throw UnimplementedError('setLooping() has not been implemented.');
   }
 
   /// Starts the video playback.
-  Future<void> play(int textureId) {
+  Future<void> play(int? textureId) {
     throw UnimplementedError('play() has not been implemented.');
   }
 
   /// Stops the video playback.
-  Future<void> pause(int textureId) {
+  Future<void> pause(int? textureId) {
     throw UnimplementedError('pause() has not been implemented.');
   }
 
   /// Sets the volume to a range between 0.0 and 1.0.
-  Future<void> setVolume(int textureId, double volume) {
+  Future<void> setVolume(int? textureId, double volume) {
     throw UnimplementedError('setVolume() has not been implemented.');
   }
 
   /// Sets the video position to a [Duration] from the start.
-  Future<void> seekTo(int textureId, Duration position) {
+  Future<void> seekTo(int? textureId, Duration? position) {
     throw UnimplementedError('seekTo() has not been implemented.');
   }
 
   /// Gets the video position as [Duration] from the start.
-  Future<Duration> getPosition(int textureId) {
+  Future<Duration> getPosition(int? textureId) {
     throw UnimplementedError('getPosition() has not been implemented.');
   }
 
   /// Returns a widget displaying the video with a given textureID.
-  Widget buildView(int textureId) {
+  Widget buildView(int? textureId) {
     throw UnimplementedError('buildView() has not been implemented.');
   }
 
@@ -135,9 +135,9 @@ class DataSource {
   /// package and null otherwise.
   DataSource({
     required this.sourceType,
-    required this.uri,
+    this.uri,
     this.licenseUri,
-    required this.formatHint,
+    this.formatHint,
     this.asset,
     this.package,
   });
@@ -152,13 +152,13 @@ class DataSource {
   ///
   /// This will be in different formats depending on the [DataSourceType] of
   /// the original video.
-  final String uri;
+  final String? uri;
 
   final String? licenseUri;
 
   /// **Android only**. Will override the platform's generic file format
   /// detection with whatever is set here.
-  final VideoFormat formatHint;
+  final VideoFormat? formatHint;
 
   /// The name of the asset. Only set for [DataSourceType.asset] videos.
   final String? asset;

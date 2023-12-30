@@ -5,12 +5,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
-
+import 'package:flutter/services.dart';
 import 'package:flutter_app_native/platform_interface/video_player_platform_interface.dart';
+
 export 'package:flutter_app_native/platform_interface/video_player_platform_interface.dart'
     show DurationRange, DataSourceType, VideoFormat;
 
@@ -49,7 +47,7 @@ class VideoPlayerValue {
   /// The total duration of the video.
   ///
   /// Is null when [initialized] is false.
-  final Duration duration;
+  final Duration? duration;
 
   /// The current playback position.
   final Duration position;
@@ -72,12 +70,12 @@ class VideoPlayerValue {
   /// A description of the error if present.
   ///
   /// If [hasError] is false this is [null].
-  final String errorDescription;
+  final String? errorDescription;
 
   /// The [size] of the currently loaded video.
   ///
   /// Is null when [initialized] is false.
-  final Size size;
+  final Size? size;
 
   /// Indicates whether or not the video has been loaded and is ready to play.
   bool get initialized => duration != null;
@@ -88,20 +86,20 @@ class VideoPlayerValue {
 
   /// Returns [size.width] / [size.height] when size is non-null, or `1.0.` when
   /// it is.
-  double get aspectRatio => size != null ? size.width / size.height : 1.0;
+  double get aspectRatio => size != null ? size!.width / size!.height : 1.0;
 
   /// Returns a new instance that has the same values as this current instance,
   /// except for any overrides passed in as arguments to [copyWidth].
   VideoPlayerValue copyWith({
-    Duration duration,
-    Size size,
-    Duration position,
-    List<DurationRange> buffered,
-    bool isPlaying,
-    bool isLooping,
-    bool isBuffering,
-    double volume,
-    String errorDescription,
+    Duration? duration,
+    Size? size,
+    Duration? position,
+    List<DurationRange>? buffered,
+    bool? isPlaying,
+    bool? isLooping,
+    bool? isBuffering,
+    double? volume,
+    String? errorDescription,
   }) {
     return VideoPlayerValue(
       duration: duration ?? this.duration,
@@ -177,38 +175,38 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
         formatHint = null,
         super(VideoPlayerValue(duration: null));
 
-  int _textureId;
+  int? _textureId;
 
   /// The URI to the video file. This will be in different formats depending on
   /// the [DataSourceType] of the original video.
   final String dataSource;
-  final String licenseUrl;
+  final String? licenseUrl;
 
   /// **Android only**. Will override the platform's generic file format
   /// detection with whatever is set here.
-  final VideoFormat formatHint;
+  final VideoFormat? formatHint;
 
   /// Describes the type of data source this [VideoPlayerController]
   /// is constructed with.
   final DataSourceType dataSourceType;
 
   /// Only set for [asset] videos. The package that the asset was loaded from.
-  final String package;
-  Timer _timer;
+  final String? package;
+  Timer? _timer;
   bool _isDisposed = false;
-  Completer<void> _creatingCompleter;
-  StreamSubscription<dynamic> _eventSubscription;
-  _VideoAppLifeCycleObserver _lifeCycleObserver;
+  Completer<void>? _creatingCompleter;
+  StreamSubscription<dynamic>? _eventSubscription;
+  _VideoAppLifeCycleObserver? _lifeCycleObserver;
 
   /// This is just exposed for testing. It shouldn't be used by anyone depending
   /// on the plugin.
   @visibleForTesting
-  int get textureId => _textureId;
+  int? get textureId => _textureId;
 
   /// Attempts to open the given [dataSource] and load metadata about the video.
   Future<void> initialize() async {
     _lifeCycleObserver = _VideoAppLifeCycleObserver(this);
-    _lifeCycleObserver.initialize();
+    _lifeCycleObserver?.initialize();
     _creatingCompleter = Completer<void>();
 
     DataSource dataSourceDescription;
@@ -238,7 +236,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
         break;
     }
     _textureId = await _videoPlayerPlatform.create(dataSourceDescription);
-    _creatingCompleter.complete(null);
+    _creatingCompleter?.complete(null);
     final Completer<void> initializingCompleter = Completer<void>();
 
     void eventListener(VideoEvent event) {
@@ -279,8 +277,8 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     }
 
     void errorListener(Object obj) {
-      final PlatformException e = obj;
-      value = VideoPlayerValue.erroneous(e.message);
+      final PlatformException e = obj as PlatformException;
+      value = VideoPlayerValue.erroneous(e.message ?? '');
       _timer?.cancel();
       if (!initializingCompleter.isCompleted) {
         initializingCompleter.completeError(obj);
@@ -296,14 +294,14 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   @override
   Future<void> dispose() async {
     if (_creatingCompleter != null) {
-      await _creatingCompleter.future;
+      await _creatingCompleter!.future;
       if (!_isDisposed) {
         _isDisposed = true;
         _timer?.cancel();
         await _eventSubscription?.cancel();
         await _videoPlayerPlatform.dispose(_textureId);
       }
-      _lifeCycleObserver.dispose();
+      _lifeCycleObserver?.dispose();
     }
     _isDisposed = true;
     super.dispose();
@@ -351,7 +349,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
           if (_isDisposed) {
             return;
           }
-          final Duration newPosition = await position;
+          final Duration? newPosition = await position;
           if (_isDisposed) {
             return;
           }
@@ -372,7 +370,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   }
 
   /// The position in the current video.
-  Future<Duration> get position async {
+  Future<Duration?> get position async {
     if (_isDisposed) {
       return null;
     }
@@ -384,13 +382,13 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   ///
   /// If [moment] is outside of the video's full range it will be automatically
   /// and silently clamped.
-  Future<void> seekTo(Duration position) async {
+  Future<void> seekTo(Duration? position) async {
     if (_isDisposed) {
       return;
     }
-    if (position > value.duration) {
+    if ((position ?? Duration()) > (value.duration ?? Duration())) {
       position = value.duration;
-    } else if (position < const Duration()) {
+    } else if ((position ?? Duration()) < const Duration()) {
       position = const Duration();
     }
     await _videoPlayerPlatform.seekTo(_textureId, position);
@@ -454,7 +452,7 @@ class VideoPlayer extends StatefulWidget {
 class _VideoPlayerState extends State<VideoPlayer> {
   _VideoPlayerState() {
     _listener = () {
-      final int newTextureId = widget.controller.textureId;
+      final int? newTextureId = widget.controller.textureId;
       if (newTextureId != _textureId) {
         setState(() {
           _textureId = newTextureId;
@@ -463,8 +461,8 @@ class _VideoPlayerState extends State<VideoPlayer> {
     };
   }
 
-  VoidCallback _listener;
-  int _textureId;
+  VoidCallback? _listener;
+  int? _textureId;
 
   @override
   void initState() {
@@ -472,21 +470,21 @@ class _VideoPlayerState extends State<VideoPlayer> {
     _textureId = widget.controller.textureId;
     // Need to listen for initialization events since the actual texture ID
     // becomes available after asynchronous initialization finishes.
-    widget.controller.addListener(_listener);
+    if (_listener != null) widget.controller.addListener(_listener!);
   }
 
   @override
   void didUpdateWidget(VideoPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
-    oldWidget.controller.removeListener(_listener);
+    if (_listener != null) oldWidget.controller.removeListener(_listener!);
     _textureId = widget.controller.textureId;
-    widget.controller.addListener(_listener);
+    if (_listener != null) widget.controller.addListener(_listener!);
   }
 
   @override
   void deactivate() {
     super.deactivate();
-    widget.controller.removeListener(_listener);
+    if (_listener != null) widget.controller.removeListener(_listener!);
   }
 
   @override
@@ -539,8 +537,8 @@ class VideoProgressColors {
 
 class _VideoScrubber extends StatefulWidget {
   _VideoScrubber({
-    @required this.child,
-    @required this.controller,
+    required this.child,
+    required this.controller,
   });
 
   final Widget child;
@@ -558,10 +556,11 @@ class _VideoScrubberState extends State<_VideoScrubber> {
   @override
   Widget build(BuildContext context) {
     void seekToRelativePosition(Offset globalPosition) {
-      final RenderBox box = context.findRenderObject();
-      final Offset tapPos = box.globalToLocal(globalPosition);
-      final double relative = tapPos.dx / box.size.width;
-      final Duration position = controller.value.duration * relative;
+      final RenderBox? box = context.findRenderObject() as RenderBox?;
+      final Offset tapPos = box?.globalToLocal(globalPosition) ?? Offset.zero;
+      final double relative = tapPos.dx / (box?.size.width ?? 1);
+      final Duration position =
+          (controller.value.duration ?? Duration()) * relative;
       controller.seekTo(position);
     }
 
@@ -614,8 +613,8 @@ class VideoProgressIndicator extends StatefulWidget {
   /// to `top: 5.0`.
   VideoProgressIndicator(
     this.controller, {
-    VideoProgressColors colors,
-    this.allowScrubbing,
+    VideoProgressColors? colors,
+    this.allowScrubbing = false,
     this.padding = const EdgeInsets.only(top: 5.0),
   }) : colors = colors ?? VideoProgressColors();
 
@@ -654,7 +653,7 @@ class _VideoProgressIndicatorState extends State<VideoProgressIndicator> {
     };
   }
 
-  VoidCallback listener;
+  VoidCallback? listener;
 
   VideoPlayerController get controller => widget.controller;
 
@@ -663,12 +662,12 @@ class _VideoProgressIndicatorState extends State<VideoProgressIndicator> {
   @override
   void initState() {
     super.initState();
-    controller.addListener(listener);
+    if (listener != null) controller.addListener(listener!);
   }
 
   @override
   void deactivate() {
-    controller.removeListener(listener);
+    if (listener != null) controller.removeListener(listener!);
     super.deactivate();
   }
 
@@ -676,7 +675,7 @@ class _VideoProgressIndicatorState extends State<VideoProgressIndicator> {
   Widget build(BuildContext context) {
     Widget progressIndicator;
     if (controller.value.initialized) {
-      final int duration = controller.value.duration.inMilliseconds;
+      final int duration = controller.value.duration?.inMilliseconds ?? 0;
       final int position = controller.value.position.inMilliseconds;
 
       int maxBuffering = 0;
