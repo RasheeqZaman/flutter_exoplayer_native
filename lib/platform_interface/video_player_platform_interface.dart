@@ -3,11 +3,9 @@
 // found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:meta/meta.dart' show required, visibleForTesting;
 
 import 'method_channel_video_player.dart';
 
@@ -136,10 +134,10 @@ class DataSource {
   /// The [package] argument must be non-null when the asset comes from a
   /// package and null otherwise.
   DataSource({
-    @required this.sourceType,
-    this.uri,
+    required this.sourceType,
+    required this.uri,
     this.licenseUri,
-    this.formatHint,
+    required this.formatHint,
     this.asset,
     this.package,
   });
@@ -156,18 +154,18 @@ class DataSource {
   /// the original video.
   final String uri;
 
-  final String licenseUri;
+  final String? licenseUri;
 
   /// **Android only**. Will override the platform's generic file format
   /// detection with whatever is set here.
   final VideoFormat formatHint;
 
   /// The name of the asset. Only set for [DataSourceType.asset] videos.
-  final String asset;
+  final String? asset;
 
   /// The package that the asset was loaded from. Only set for
   /// [DataSourceType.asset] videos.
-  final String package;
+  final String? package;
 }
 
 /// The way in which the video was originally loaded.
@@ -209,7 +207,7 @@ class VideoEvent {
   /// Depending on the [eventType], the [duration], [size] and [buffered]
   /// arguments can be null.
   VideoEvent({
-    @required this.eventType,
+    required this.eventType,
     this.duration,
     this.size,
     this.buffered,
@@ -221,17 +219,17 @@ class VideoEvent {
   /// Duration of the video.
   ///
   /// Only used if [eventType] is [VideoEventType.initialized].
-  final Duration duration;
+  final Duration? duration;
 
   /// Size of the video.
   ///
   /// Only used if [eventType] is [VideoEventType.initialized].
-  final Size size;
+  final Size? size;
 
   /// Buffered parts of the video.
   ///
   /// Only used if [eventType] is [VideoEventType.bufferingUpdate].
-  final List<DurationRange> buffered;
+  final List<DurationRange>? buffered;
 
   @override
   bool operator ==(Object other) {
