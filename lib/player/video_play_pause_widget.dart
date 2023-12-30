@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import 'video_player.dart';
 import 'fade_animation_widget.dart';
+import 'video_player.dart';
 
 /// Controls play and pause of [controller].
 ///
@@ -27,16 +27,20 @@ class _VideoPlayPauseState extends State<VideoPlayPause> {
     };
   }
 
-  FadeAnimation imageFadeAnim =
-  FadeAnimation(child: const Icon(Icons.play_arrow, size: 100.0, color: Colors.white,));
-  VoidCallback listener;
+  FadeAnimation imageFadeAnim = FadeAnimation(
+      child: const Icon(
+    Icons.play_arrow,
+    size: 100.0,
+    color: Colors.white,
+  ));
+  VoidCallback? listener;
 
   VideoPlayerController get controller => widget.controller;
 
   @override
   void initState() {
     super.initState();
-    controller.addListener(listener);
+    if(listener != null) controller.addListener(listener!);
     controller.setVolume(1.0);
     controller.play();
   }
@@ -45,7 +49,7 @@ class _VideoPlayPauseState extends State<VideoPlayPause> {
   void deactivate() {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       controller.setVolume(0.0);
-      controller.removeListener(listener);
+      if(listener != null) controller.removeListener(listener!);
     });
 
     super.deactivate();
