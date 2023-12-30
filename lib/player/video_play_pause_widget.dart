@@ -25,7 +25,7 @@ class _VideoPlayPauseState extends State<VideoPlayPause> {
     listener = () {
       SchedulerBinding.instance.addPostFrameCallback(
         (_) {
-          if(context.mounted) setState(() {});
+          if(mounted) setState(() {});
         },
       );
     };
