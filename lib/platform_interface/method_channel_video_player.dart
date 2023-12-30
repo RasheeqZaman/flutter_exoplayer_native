@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -54,12 +53,12 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
         break;
     }
 
-    final Map<String, dynamic> response =
+    final Map<String, dynamic>? response =
         await _channel.invokeMapMethod<String, dynamic>(
       'create',
       dataSourceDescription,
     );
-    return response['textureId'];
+    return response?['textureId'];
   }
 
   @override
@@ -114,10 +113,11 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
   @override
   Future<Duration> getPosition(int textureId) async {
     return Duration(
-      milliseconds: await _channel.invokeMethod<int>(
-        'position',
-        <String, dynamic>{'textureId': textureId},
-      ),
+      milliseconds: (await _channel.invokeMethod<int>(
+            'position',
+            <String, dynamic>{'textureId': textureId},
+          )) ??
+          0,
     );
   }
 
