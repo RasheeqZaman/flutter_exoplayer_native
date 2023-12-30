@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 class FadeAnimation extends StatefulWidget {
-  FadeAnimation(
-      {this.child, this.duration = const Duration(milliseconds: 500)});
+  FadeAnimation({
+    required this.child,
+    this.duration = const Duration(milliseconds: 500),
+  });
 
   final Widget child;
   final Duration duration;
@@ -13,24 +15,24 @@ class FadeAnimation extends StatefulWidget {
 
 class _FadeAnimationState extends State<FadeAnimation>
     with SingleTickerProviderStateMixin {
-  AnimationController animationController;
+  AnimationController? animationController;
 
   @override
   void initState() {
     super.initState();
     animationController =
         AnimationController(duration: widget.duration, vsync: this);
-    animationController.addListener(() {
+    animationController?.addListener(() {
       if (mounted) {
         setState(() {});
       }
     });
-    animationController.forward(from: 0.0);
+    animationController?.forward(from: 0.0);
   }
 
   @override
   void deactivate() {
-    animationController.stop();
+    animationController?.stop();
     super.deactivate();
   }
 
@@ -38,21 +40,21 @@ class _FadeAnimationState extends State<FadeAnimation>
   void didUpdateWidget(FadeAnimation oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.child != widget.child) {
-      animationController.forward(from: 0.0);
+      animationController?.forward(from: 0.0);
     }
   }
 
   @override
   void dispose() {
-    animationController.dispose();
+    animationController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return animationController.isAnimating
+    return (animationController?.isAnimating ?? false)
         ? Opacity(
-            opacity: 1.0 - animationController.value,
+            opacity: 1.0 - (animationController?.value ?? 0.0),
             child: widget.child,
           )
         : Container();
