@@ -16,7 +16,7 @@ class AspectRatioVideoState extends State<AspectRatioVideo> {
   VideoPlayerController get controller => widget.controller;
   bool initialized = false;
 
-  VoidCallback listener;
+  VoidCallback? listener;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class AspectRatioVideoState extends State<AspectRatioVideo> {
         setState(() {});
       }
     };
-    controller.addListener(listener);
+    controller.addListener(listener!);
   }
 
   @override
