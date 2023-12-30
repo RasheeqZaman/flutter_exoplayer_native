@@ -7,11 +7,8 @@
 /// An example of using the plugin, controlling lifecycle and playback of the
 /// video.
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_app_native/list_media_screen.dart';
-import 'package:flutter_app_native/player/video_player.dart';
 
 void main() {
   runApp(
